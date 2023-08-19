@@ -1,0 +1,9 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa {content: "Booby Care", date: "2023-08-19T14:57:59.703Z"}
+    activate server
+    server->>browser: {"message":"note created"}
+    Note left of server: New note has been created, sent to the server and saved
+    deactivate server
