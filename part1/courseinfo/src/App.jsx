@@ -3,7 +3,7 @@ import Content from "./Content.jsx";
 import Total from "./Total.jsx";
 
 const App = () => {
-    const courses = {
+    const course = {
         name: 'Half Stack application development',
         parts: [
             {
@@ -23,9 +23,9 @@ const App = () => {
 
     return (
         <div>
-            <Header course={courses.name}/>
-            <Content parts={courses.parts}/>
-            <Total count={courses.parts.length}/>
+            <Header course={course.name}/>
+            <Content parts={course.parts}/>
+            <Total count={course.parts.length}/>
         </div>
     )
 }
