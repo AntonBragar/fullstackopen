@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import Filter from "./components/Filter.jsx";
 import PersonForm from "./components/PersonForm.jsx";
 import Persons from "./components/Persons.jsx";
-import axios from "axios";
 import personService from './services/persons.js'
 import Notification from "./components/Notification.jsx";
 
@@ -54,6 +53,7 @@ const App = () => {
                         setTimeout(() => setNotification(null), 5000)
                     })
                     .catch(error => {
+                        console.log(error)
                         setPersons(persons
                             .filter(person =>
                                 person.name !== duplicatePerson.name
@@ -86,6 +86,14 @@ const App = () => {
                     })
                     setTimeout(() => setNotification(null), 5000)
                 })
+                .catch(error => {
+                    console.log(error.response.data.error)
+                    setNotification({
+                        text: error.response.data.error,
+                        type: 'error'
+                    })
+                    setTimeout(() => setNotification(null), 5000)
+                })
         }
     }
     const deletePerson = (id) => {
@@ -105,7 +113,7 @@ const App = () => {
 
     return (
         <div>
-            <h2>Phonebook</h2>
+            <h2>Phonebook by Anton Brahar</h2>
             <Notification notification={notification}/>
             <Filter filter={filter} handleFilter={handleFilterChange}/>
             <PersonForm handleFormSubmit={handleFormSubmit} handleNameChange={handleNameChange} newName={newName}
