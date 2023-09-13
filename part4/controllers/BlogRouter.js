@@ -57,6 +57,8 @@ blogRouter.delete('/:id', async (request, response) => {
     const blog = await Blog.findById(request.params.id)
     const user = request.user
 
+    console.log(blog)
+
     if (!blog) {
         return response.status(204).end()
     }
