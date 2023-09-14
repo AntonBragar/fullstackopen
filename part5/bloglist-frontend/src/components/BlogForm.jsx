@@ -1,84 +1,81 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs.js'
+import PropTypes from 'prop-types'
 
-const BlogForm = ({ blogs, setBlogs, setNotification, addNewBlog, setAddNewBlog }) => {
+const BlogForm = ({ handleNewBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
-  const [newPost, setNewPost] = useState({
-    title: '',
-    author: '',
-    url: ''
-  })
-
-  const createBlog = (event) => {
-    event.preventDefault()
-    if (newPost.title && newPost.author && newPost.url) {
-      blogService.create(newPost).then(r => {
-        setNotification({
-          text: `a new blog ${r.title} by ${r.author} has been added`,
-          type: 'notification'
-        })
-        setTimeout(() => {
-          setNotification(null)
-        }, 5000)
-
-        setBlogs([...blogs, r])
-
-        setNewPost({
-          title: '',
-          author: '',
-          url: ''
-        })
-      })
-      setAddNewBlog(!addNewBlog)
-    } else {
-      setNotification({
-        text: 'Some of data is missing',
-        type: 'error'
-      })
-
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
-
-      setAddNewBlog(!addNewBlog)
-    }
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value)
   }
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value)
+  }
+  const handleUrlChange = (event) => {
+    setUrl(event.target.value)
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    handleNewBlog({
+      title: title,
+      author: author,
+      url: url,
+      likes: 0
+    })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
   return (
     <div>
-      <h2>Create new blog</h2>
-      <form onSubmit={createBlog}>
-        <div>
-                    title
-          <input
-            type="text"
-            value={newPost.title}
-            name="Title"
-            onChange={({ target }) => setNewPost({ ...newPost, title: target.value })}
-          />
-        </div>
-        <div>
-                    author
-          <input
-            type="text"
-            value={newPost.author}
-            name="Author"
-            onChange={({ target }) => setNewPost({ ...newPost, author: target.value })}
-          />
-        </div>
-        <div>
-                    url
-          <input
-            type="text"
-            value={newPost.url}
-            name="Url"
-            onChange={({ target }) => setNewPost({ ...newPost, url: target.value })}
-          />
-        </div>
-        <button>Create</button>
-        <button onClick={() => setAddNewBlog(!addNewBlog)}>Cancel</button>
+      <form id='form' onSubmit={handleSubmit}>
+        <label>
+          <p>
+              Title:
+            <input
+              id='title'
+              type='text'
+              value={title}
+              name='Title:'
+              onChange={handleTitleChange}
+            />
+          </p>
+        </label>
+        <label>
+          <p>
+              Author:
+            <input
+              id='author'
+              type='text'
+              value={author}
+              name="Author:"
+              onChange={handleAuthorChange}
+            />
+          </p>
+        </label>
+        <label>
+          <p>
+              Url:
+            <input
+              id='url'
+              type='text'
+              value={url}
+              name="Url:"
+              onChange={handleUrlChange}
+            />
+          </p>
+        </label>
+        <button id='create' type='submit'>create</button>
       </form>
     </div>
   )
+}
+
+BlogForm.propTypes = {
+  handleNewBlog: PropTypes.func.isRequired,
 }
 
 export default BlogForm

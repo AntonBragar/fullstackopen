@@ -1,51 +1,66 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
-const Blog = ({ blog, loggedUser, handleBlogDelete, handleLike }) => {
+const Blog = ({
+  blog,
+  handleLike,
+  handleBlogDelete,
+  loggedUser
+}) => {
   const blogStyle = {
-    display: 'flex',
-    alignItems: 'center',
     paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
+    paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5,
-    marginTop: 10,
+    marginBottom: 5
   }
-  const [fullInfo, setFullInfo] = useState(false)
+
+  const [isVisible, setVisible] = useState(false)
 
   const deleteButton = () => {
     if (blog.user.username === loggedUser) {
       return (
-        <button onClick={() => handleBlogDelete(blog)}>delete</button>
+        <button id='delete' onClick={() => handleBlogDelete()}>delete</button>
       )
     }
   }
 
+  if (!isVisible) {
+    return (
+      <div style={blogStyle} className='shortBlogInfo'>
+        <div>
+          {blog.title} {blog.author}
+          <button id ='view' onClick={() => setVisible(true)}>view</button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={blogStyle}>
-      {fullInfo ? (
-        <div>
-          <div>
-            <button onClick={() => setFullInfo(!fullInfo)}>{fullInfo ? 'hide' : 'view'}</button>
-            <p>Title: {blog.title}</p>
-            <p>Author: {blog.author}</p>
-            <p>Url: {blog.url}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <p>Likes: {blog.likes}</p>
-              <button onClick={() => handleLike(blog)}>Like</button>
-            </div>
-          </div>
-          {deleteButton()}
-        </div>
-      ) : (
-        <div>
-                    Title: {blog.title} | Author: {blog.author}
-          <button onClick={() => setFullInfo(!fullInfo)}>{fullInfo ? 'hide' : 'view'}</button>
-        </div>
-      )}
+      <div>
+        {blog.title} {blog.author} <button onClick={() => setVisible(false)}>hide</button>
+      </div>
+      <div>
+        {blog.url}
+      </div>
+      <div>
+          likes {blog.likes} <button id='like' onClick={handleLike}>like</button>
+      </div>
+      <div>
+        {blog.user.name}
+      </div>
+      <div>
+        {deleteButton()}
+      </div>
     </div>
-  )
+  )}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleLike: PropTypes.func.isRequired,
+  handleBlogDelete: PropTypes.func.isRequired,
+  loggedUser: PropTypes.string.isRequired
 }
 
 export default Blog
