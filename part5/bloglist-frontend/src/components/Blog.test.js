@@ -1,6 +1,6 @@
 import React from 'react'
 import '@testing-library/jest-dom'
-import { render, screen  } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import Blog from './Blog'
 
 test('Blog renders the blog\'s title and author, but does not render its url or number of likes by default.', () => {
@@ -37,20 +37,66 @@ test('Blog renders the blog\'s title and author, but does not render its url or 
   )
 })
 
-
-test('Just a test if blog container available', () => {
+test('Test which checks that the blog\'s url and number of likes are shown when the button controlling the shown details has been clicked.', () => {
   const blog = {
     title: 'Blog title',
     author: 'Blog Author',
     url: 'google.com',
+    user: 'Gus',
     likes: 3
   }
+  const loggedUser = 'Gustav'
+  const handleBlogDelete = () => null
+  const handleLike = () => null
 
   const component = render(
-    <Blog blog={blog} />
+    <Blog
+      blog={blog}
+      loggedUser={loggedUser}
+      handleBlogDelete={handleBlogDelete}
+      handleLike={handleLike}
+    />
   )
 
-  const div = component.container.querySelector('.blog-container')
-  screen.debug(div)
-  expect(div).toBeDefined()
+  const viewButton = component.getByText('view')
+  fireEvent.click(viewButton)
+
+  expect(component.container).toHaveTextContent(
+    'google.com'
+  )
+  expect(component.container).toHaveTextContent(
+    3
+  )
+})
+
+test('Test which ensures that if the like button is clicked twice.', () => {
+  const blog = {
+    title: 'Blog title',
+    author: 'Blog Author',
+    url: 'google.com',
+    user: 'Gus',
+    likes: 3
+  }
+  const mockHandler = jest.fn()
+
+  const loggedUser = 'Gustav'
+  const handleBlogDelete = () => null
+
+  const component = render(
+    <Blog
+      blog={blog}
+      loggedUser={loggedUser}
+      handleBlogDelete={handleBlogDelete}
+      handleLike={mockHandler}
+    />
+  )
+
+  const viewButton = component.getByText('view')
+  fireEvent.click(viewButton)
+
+  const likeButton = component.getByRole('button', { name: 'like' })
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
